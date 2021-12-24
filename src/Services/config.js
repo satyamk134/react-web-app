@@ -5,9 +5,11 @@ export let headerConfig = {
 }
 
 export const axiosObj = axios.create({
-    baseURL: 'http://localhost:4343/api',
-    timeout: 1000,
+    baseURL: process.env.REACT_APP_API_URL,
+    timeout: 300000,
 });
+
+//'http://localhost:4343/api'
 
 export const setBearerToken = (token)=>{
     let headers = {Authorization:'Bearer '+token};

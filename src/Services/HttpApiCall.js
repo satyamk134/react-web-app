@@ -36,6 +36,10 @@ export const addOrderDetails = (data)=>{
     return postRequest('order', data);
 }
 
+export const signup = (data)=>{
+    return postRequest('/auth/user',data);
+}
+
 
 //http methods as custom methods starts here
 

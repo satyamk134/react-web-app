@@ -1,4 +1,5 @@
 import * as React from 'react';
+import RegisterForm from './Register'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -6,20 +7,24 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
 import LoginForm from '../components/loginForm';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useHistory,useLocation } from "react-router-dom";
 import { setBearerToken } from '../Services/config';
 import Cookies from 'universal-cookie';
+import { useSelector,useDispatch } from 'react-redux';
 import { getGoogleAuthUrl, loginGoogleUser, getToken, login } from '../Services/HttpApiCall';
+import   './css/Login.css';
 
 export default function Login() {
   let open = useSelector(selectPopupStatus);
   let userInfo = useSelector(selectUser);
   let [emailId,setEmailId] = useState('');
   let [password,setPassword]=useState('');
+  let [isLogin,setLoginForm] = useState(true);
+  let [signupForm,setSignupForm] = useState({firstName:'',lastName:'',emailId:'',password:''});
   const dispatch = useDispatch();
   let history = useHistory();
   const location = useLocation();
@@ -73,10 +78,22 @@ export default function Login() {
   },[userInfo.isLoginPopupOpen]);
 
   useEffect(()=>{
-    if(emailId && password){
+    if(userInfo.loginStatus == 'submitted'){
       handleLogin();
     }
-  },[emailId,password])
+  },[userInfo.loginStatus])
+
+  useEffect(()=>{
+    if(userInfo.signupStatus == 'submitted'){
+      handleSignup();
+    }
+    
+    if(userInfo.signupStatus == 'signedUp'){
+        setEmailId(signupForm.emailId);
+        setPassword(signupForm.password);
+        dispatch({type:'SET_LOGIN_STATUS',payload:{loginStatus:"submitted",isLoggedIn:false}});
+    }
+  },[userInfo.signupStatus])
 
   const checkLoginCookie = () => {
     let cookies = new Cookies();
@@ -102,7 +119,6 @@ export default function Login() {
 
   const handleLogin = () => {
     //redirect to specific category page and update state
-    console.log("handle login function called");
       dispatch({type: 'LOGIN_CLICK'});
       dispatch({type: 'LOGIN' ,payload:{isLoggedIn:false,emailId:emailId, password:password}});
   }
@@ -140,7 +156,9 @@ export default function Login() {
       .then(setJwtToken)
       .then(loginGoogleUser)
       .then((res)=>{
-         dispatch({type:'LOGIN',payload:{emailId:res.data.data.emailId}});
+        console.log("response  is",res);
+         //login is already done from backend 
+         dispatch({type:'UPDATE_USER_STATE',payload:{...res.data.data,...{isLoggedIn:true,loginStatus:"loggedIn"}}});
          return Promise.resolve(1);
       })
       .catch(err=>{
@@ -167,6 +185,17 @@ export default function Login() {
 
   }
 
+  const newUserHandler = ()=>{
+    //hide the login form and open the sign up form
+    setLoginForm(!isLogin);
+  }
+  const handleSignup = () => {
+    //redirect to specific category page and update state
+      dispatch({type: 'SIGNUP_CLICK'});
+      dispatch({type: 'SIGNUP' ,payload:signupForm});
+    
+  }
+
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
@@ -175,16 +204,31 @@ export default function Login() {
           <DialogContentText>
             We need few details to continue,
           </DialogContentText>
-          <LoginForm setEmailId={setEmailId} setPassword={setPassword} handleLogin={handleLogin} />
-          <Button onClick={googleLoginHandler}>Continue with Google</Button>
+          {isLogin?<LoginForm setEmailId={setEmailId} setPassword={setPassword} handleLogin={handleLogin} />:
+            <RegisterForm setSignupForm={setSignupForm} />
+          }
+          <Box className='login-register'>
+            <LoginSignUp    isLogin={isLogin} newUserHandler={newUserHandler}/>
+          </Box>
+          
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>SIGNUP</Button>
+          <Box className='login-with-google'>
+            <Button variant="contained"  onClick={googleLoginHandler}>Continue with Google</Button>
+          </Box>
         </DialogActions>
       </Dialog>
     </div>
   );
 }
+const LoginSignUp = ({isLogin,newUserHandler})=>{
+    if(isLogin){
+      return <Link href="#"  onClick={newUserHandler} underline="hover">New User? Click here</Link>
+    }else{
+      return <Link href="#"  onClick={newUserHandler} underline="hover">Existing User? Click here</Link>
+    }
+}
+
 const selectPopupStatus = state => {console.log(state);return state.user.isLoginPopupOpen};
 const selectUser = state => state.user;
 

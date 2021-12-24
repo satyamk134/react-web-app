@@ -7,6 +7,7 @@ import BookSlot from '../components/BookSlot';
 import Profile from '../components/Profile';
 import Order from '../components/Orders';
 import CustomerOrders from '../components/customerOrder/CustomerOrders';
+import SnackAlert from '../ui-components/Snackbar';
 export default function HomeLayout (){
     React.useEffect(()=>{
         console.log("It will be called insode homelayout");
@@ -15,6 +16,7 @@ export default function HomeLayout (){
         <div> 
             <Header />  
             <Login />
+            <SnackAlert/>
             <Route exact path="/">
                 <Menu />
             </Route>
@@ -30,6 +32,7 @@ export default function HomeLayout (){
             <Route  path="/my-orders-agent">
                 <CustomerOrders />
             </Route>
+            
 
             
         </div>

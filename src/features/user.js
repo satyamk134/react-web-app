@@ -2,6 +2,9 @@
 const initialUserState = {
 
     isLoggedIn: false,
+    loginStatus:'initial',
+    signupStatus:'initial',
+    isSignedUp:false,
     firstName: 'Sam',
     lastName: 'Kumar',
     role: 'customer',
@@ -9,14 +12,13 @@ const initialUserState = {
     token: '',
     isLoginPopupOpen: false,
     isPickupSlotBooked:false
-
 }
 
 export default function loginReducer(state = initialUserState, action) {
     switch (action.type) {
         case 'UPDATE_USER_STATE': {
             console.log("came to update user state", action);
-            return { ...state, ...action.payload, isLoggedIn: true }
+            return { ...state, ...action.payload }
         };
         case 'SET_LOGIN_STATUS': {
             return { ...state, ...action.payload}
@@ -29,6 +31,10 @@ export default function loginReducer(state = initialUserState, action) {
         }
         case 'PICKUP_SLOT_BOOKED':{
             return { ...state, isPickupSlotBooked: action.payload.isPickupSlotBooked }
+        }
+        case 'SET_SIGNUP_STATUS':{
+            console.log("payload",action.payload);
+            return {...state,...{isSignedUp:action.payload.isSignedUp,signupStatus:action.payload.signupStatus}};
         }
 
         // Do something here based on the different types of actions

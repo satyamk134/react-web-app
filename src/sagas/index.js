@@ -1,5 +1,5 @@
 import { put, takeEvery, all,call } from 'redux-saga/effects';
-import { login, bookPickupSlot, deocodeJwt, addOrderDetails} from '../Services/HttpApiCall';
+import { login, bookPickupSlot, deocodeJwt, addOrderDetails,signup} from '../Services/HttpApiCall';
 
 function* helloSaga(){
     console.log("Welcome to sagas!!");
@@ -24,9 +24,14 @@ function* loginUser(action){
     try{
         let userInfoAfterLogin = yield call(login, action.payload);
         yield put({type:'LOGIN_POPUP',payload:{isLoginPopupOpen:false}});
-        yield put({type:'UPDATE_USER_STATE',payload:userInfoAfterLogin.data.data});
+        yield put({type:'UPDATE_USER_STATE',payload:{...userInfoAfterLogin.data.data,...{isLoggedIn:true,loginStatus:"loggedIn"}}});
     }catch(err){
-        console.log("Error is",err);
+        console.log("error is",err.message);
+        console.log("error is",err.response.data.msg);
+        let msg = err.response.data.msg;
+        yield put({type:'UPDATE_USER_STATE',payload:{loginStatus:'failed',isLoggedIn:false}});
+        yield put({type:'SET_SNACK_MESSAGE',payload:{snackbarMsg:msg,snackbarStatus:"error"}});
+        yield put({type:'SHOW_SNACK_ERROR',payload:{showSnackbar:true}});
     }
     
     
@@ -75,6 +80,26 @@ function* watchAddOrderDetails(){
     yield takeEvery('SAVE_ORDER_DETAILS',addOrderDetailsHandler);
 }
 
+function* singupHandler(action){
+    try {
+        let signupStatus = yield call(signup, action.payload);
+        yield put({type:'SET_SIGNUP_STATUS',payload:{signupStatus:'signedUp',isSignedUp:true}});
+        //yield put({type:'SET_LOGIN_DETAILS',payload:{signupStatus:'signedUp',isSignedUp:true}});
+
+    } catch (err) {
+        
+        let msg = err.response.data.msg;
+        console.log("msg",msg);
+        yield put({type:'SET_SIGNUP_STATUS',payload:{signupStatus:'failed',isSignedUp:false}});
+        yield put({type:'SET_SNACK_MESSAGE',payload:{snackbarMsg:msg,snackbarStatus:"error"}});
+        yield put({type:'SHOW_SNACK_ERROR',payload:{showSnackbar:true}});
+    }
+}
+
+function* watchSignup(){
+    yield takeEvery('SIGNUP',singupHandler);
+}
+
 export  function* rootSaga() {
     yield all([
       helloSaga(),
@@ -82,6 +107,7 @@ export  function* rootSaga() {
       watchLoggedIn(),
       watchBookPickup(),
       watchJwtDecode(),
-      watchAddOrderDetails()
+      watchAddOrderDetails(),
+      watchSignup()
     ])
   }

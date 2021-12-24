@@ -22,7 +22,7 @@ export default function BasicMenu() {
   const logoutHanlder = () => {
     let cookies = new Cookies();
     cookies.remove('token');
-    dispatch({type:"SET_LOGIN_STATUS",payload:{isLoggedIn:false,token:""}})
+    dispatch({type:"SET_LOGIN_STATUS",payload:{isLoggedIn:false,token:"",loginStatus:""}})
     setAnchorEl(null);
     history.push("/");
   }

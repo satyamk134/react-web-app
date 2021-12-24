@@ -5,11 +5,17 @@ import Box from '@material-ui/core/Box';
 import TextField from '@mui/material/TextField';
 import { useSelector,useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
-import   './css/LoginForm.css';
+import   './css/RegisterForm.css';
 import * as yup from 'yup';
 import LoadingButton from '@mui/lab/LoadingButton';
-export default function LoginForm(loginMethods){
+export default function RegisterForm(registerMethods){
 const validationSchema = yup.object({
+    firstName: yup
+      .string('Enter your First Name')
+      .required('First Name is required'),
+    lastName: yup
+      .string('Enter your lastname')
+      .required('Lastname is required'),
     emailId: yup
       .string('Enter your email')
       .email('Enter a valid email')
@@ -17,27 +23,47 @@ const validationSchema = yup.object({
     password: yup
       .string('Enter your password')
       .min(8, 'Password should be of minimum 8 characters length')
-      .required('Password is required'),
+      .required('Password is required')
   });
 
   let userInfo = useSelector(selectUser);
   let dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
+      firstName:'',
+      lastName:'',
       emailId: '',
-      password:''
+      password:'',
     },
     validationSchema: validationSchema,
     onSubmit: values => {
-      
-      loginMethods.setEmailId(values.emailId);
-      loginMethods.setPassword(values.password);
-      dispatch({type:'SET_LOGIN_STATUS',payload:{loginStatus:"submitted",isLoggedIn:false}});
-      //loginMethods.handleLogin();
+        console.log("register success");
+        registerMethods.setSignupForm(values);
+        dispatch({type:'SET_SIGNUP_STATUS',payload:{signupStatus:"submitted",isSignedUp:false}});
+         
     },
   });
   return (
-    <form onSubmit={formik.handleSubmit} className="login-form">
+    <form onSubmit={formik.handleSubmit} className="signup-form">
+
+      <TextField  label="First Name" variant="standard"  id="firstName"
+            name="firstName"
+            type="text"
+            onChange={formik.handleChange}
+            value={formik.values.firstName}
+            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+            helperText={formik.touched.firstName && formik.errors.firstName}
+      />
+
+      <TextField label="Last Name" variant="standard"  id="lastName"
+                name="lastName"
+                type="text"
+                onChange={formik.handleChange}
+                value={formik.values.lastName}
+                error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                helperText={formik.touched.lastName && formik.errors.lastName}
+      />
+      
     
         
       <TextField  label="Email id" variant="standard"  id="emailId"
@@ -57,9 +83,9 @@ const validationSchema = yup.object({
             helperText={formik.touched.password && formik.errors.password}
             value={formik.values.password}
         />
-        <Box className='login-button'>
-          <LoadingButton   type="submit" loading={userInfo.loginStatus == 'submitted'}  variant="outlined">
-                LOGIN
+        <Box className='signup-button'>
+          <LoadingButton   type="submit"   variant="outlined">
+                SIGN UP
           </LoadingButton>  
         </Box>
          

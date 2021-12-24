@@ -1,5 +1,7 @@
 import userReducer from './features/user';
 import orderReducer from './features/orders';
+import alertReducer from './features/alerts';
+
 import { combineReducers } from 'redux'
 
 // export default function rootReducer(state = {}, action) {
@@ -13,5 +15,6 @@ import { combineReducers } from 'redux'
 
 export default combineReducers({
   user:userReducer,
-  order:orderReducer
+  order:orderReducer,
+  alert:alertReducer
 })
