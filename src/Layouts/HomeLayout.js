@@ -7,6 +7,7 @@ import BookSlot from '../components/BookSlot';
 import Profile from '../components/Profile';
 import Order from '../components/Orders';
 import CustomerOrders from '../components/customerOrder/CustomerOrders';
+import MyOrders from '../components/MyOrders';
 import SnackAlert from '../ui-components/Snackbar';
 export default function HomeLayout (){
     React.useEffect(()=>{
@@ -31,6 +32,9 @@ export default function HomeLayout (){
             </Route>
             <Route  path="/my-orders-agent">
                 <CustomerOrders />
+            </Route>
+            <Route  path="/my-orders">
+                <MyOrders />
             </Route>
             
 
