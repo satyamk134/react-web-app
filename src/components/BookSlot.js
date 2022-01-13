@@ -4,6 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import TimeSlots from './TimeSlots';
 import Button from '@mui/material/Button';
 import TimeSelector from './TimePicker';
@@ -11,6 +12,7 @@ import SuccessAlertComponent from './SuccessAlert';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
+import ListComponent from '../ui-components/ListComponent'
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -68,23 +70,34 @@ export default function BookSlot() {
       
   }
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Today" {...a11yProps(0)} />
-          <Tab label="Tomorrow" {...a11yProps(1)} />
-        </Tabs>
-      </Box>
-      <TabPanel value={value} index={0} >
-        <TimeSelector selectTimeHandler={slotSelector} />
-      </TabPanel>
-      <TabPanel value={value} index={1} >
-        <TimeSelector  selectTimeHandler={slotSelector} />  
-      </TabPanel>
 
-      <Button variant="contained" onClick ={confirmOrder}>Book Now</Button>
-      <SuccessAlertComponent open={successAlert} setOpen={setSuccessAlert} msg="Slot booked successfully" />
-    </Box>
+    <Grid container spacing={2}>
+      <Grid item xs={6} md={2}>
+        <ListComponent />
+      </Grid>
+      <Grid item xs={6} md={10}>
+      <Box sx={{ width: '100%' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+            <Tab label="Today" {...a11yProps(0)} />
+            <Tab label="Tomorrow" {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0} >
+          <TimeSelector selectTimeHandler={slotSelector} />
+        </TabPanel>
+        <TabPanel value={value} index={1} >
+          <TimeSelector  selectTimeHandler={slotSelector} />  
+        </TabPanel>
+
+        <Button variant="contained" onClick ={confirmOrder}>Book Now</Button>
+        <SuccessAlertComponent open={successAlert} setOpen={setSuccessAlert} msg="Slot booked successfully" />
+      </Box>
+      </Grid>
+      
+    </Grid>
+    
+    
 
     
   );

@@ -11,7 +11,8 @@ const initialUserState = {
     emailId: 'satyam@gmail.com',
     token: '',
     isLoginPopupOpen: false,
-    isPickupSlotBooked:false
+    isPickupSlotBooked:false,
+    currentUrl:""
 }
 
 export default function loginReducer(state = initialUserState, action) {
@@ -35,6 +36,10 @@ export default function loginReducer(state = initialUserState, action) {
         case 'SET_SIGNUP_STATUS':{
             console.log("payload",action.payload);
             return {...state,...{isSignedUp:action.payload.isSignedUp,signupStatus:action.payload.signupStatus}};
+        }
+        case 'SIDE_OPTION_CHANGE':{
+            console.log("payload",action.payload);
+            return {...state,...{currentUrl:action.payload.currentUrl}};
         }
 
         // Do something here based on the different types of actions

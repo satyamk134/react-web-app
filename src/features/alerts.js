@@ -2,7 +2,8 @@
 const initialAlertState = {
     showSnackbar:false,
     snackbarMsg:'',
-    snackbarStatus:''
+    snackbarStatus:'',
+    menu:""
 }
 
 export default function alertReducer(state = initialAlertState, action) {
@@ -16,6 +17,9 @@ export default function alertReducer(state = initialAlertState, action) {
         };
         case 'HIDE_SNACKBAR' :{
             return { ...state, ...{showSnackbar:action.payload.showSnackbar}}
+        }
+        case 'CHANGE_SIDE_MENU' :{
+            return { ...state, ...{menu:action.payload.menu}}
         }
         // Do something here based on the different types of actions
         default:

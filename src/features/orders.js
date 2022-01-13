@@ -12,6 +12,7 @@ export default function orderReducer(state = initialOrderState, action) {
         };
         
         
+        
 
         // Do something here based on the different types of actions
         default:

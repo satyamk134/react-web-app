@@ -1,5 +1,5 @@
-import { axiosObj } from './config';
 
+import {getRequest,postRequest} from './http';
 export const  getGoogleAuthUrl = ()=>{
     return getRequest('/auth/google');
 }
@@ -41,16 +41,6 @@ export const signup = (data)=>{
 }
 
 
-//http methods as custom methods starts here
 
-export const  getRequest = (url,params = {})=>{
-    return axiosObj.get(url,params);
-}
-
-export const postRequest = (url, data) => {
-    return axiosObj.post(url,data);
-}
-
-//http methods as custom methods ends here
 
 
