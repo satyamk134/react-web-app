@@ -14,7 +14,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import AddMoreClothes from '../ui-components/AddMoreDialog' 
-import {getOrdersTobePicked, getOrderDetails} from '../Services/HttpApiCall';
+import {getOrdersTobePicked} from '../Services/HttpApiCall';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -35,11 +35,7 @@ function Row(props) {
   useEffect(()=>{
     if(open){
       //fetch the details
-      getOrderDetails({orderId:row.orderId})
-      .then(response=>{
-          row.details = response.data;
-          setRowDetails(response.data);
-      });
+      
     }
     
   },[open]);

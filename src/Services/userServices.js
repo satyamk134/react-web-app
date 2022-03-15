@@ -1,4 +1,4 @@
-import {getRequest,postRequest} from './http';
+import {mainApp,CartApp,OrderApp} from './http';
 export const  sideDrawerMenus = ()=>{
     return({
         'wishmaster':[
@@ -53,6 +53,6 @@ export const  sideDrawerMenus = ()=>{
 }
 
 export const getPlacedOrders = (params) => {
-    return getRequest('/order/getAll',{params:params})
+    return mainApp.getRequest('/order/getAll',{params:params})
 }
 

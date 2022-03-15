@@ -1,0 +1,17 @@
+.order-menu{
+    list-style-type:none;
+    display: flex;
+    padding: 0;
+    justify-content: space-between;
+    
+
+}
+.order-sub-menu{
+    color:#8F8E8C;
+    //opacity: 0.9;
+}
+
+.each-order-service{
+    display: flex;
+    justify-content: space-between;
+}

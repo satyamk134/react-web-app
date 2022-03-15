@@ -10,13 +10,23 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useSelector,useDispatch } from 'react-redux';
 import HeaderLastMenu from './HeaderLastMenu';
 import HeaderRoleMenu from '../components/HeaderRoleMenu';
+import { useHistory } from 'react-router-dom';
 export default function Header() {
 
+  let history = useHistory();
   let isLoggedIn = useSelector(selectLoginStatus);
+  const dispatch = useDispatch();
+  const loginHandler = ()=>{
+    dispatch({type:'LOGIN_POPUP',payload:{isLoginPopupOpen:true}});
+  }
+
+  const redirectToLanding = ()=>{
+    history.push('/');
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -27,21 +37,21 @@ export default function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+          <Typography onClick={redirectToLanding} variant="h6" component="div" sx={{ flexGrow: 1,cursor: 'pointer' }}>
+            swab
           </Typography>
-          <Menu isLoggedIn={isLoggedIn}/>
+          <Menu isLoggedIn={isLoggedIn} login={loginHandler}/>
         </Toolbar>
       </AppBar>
     </Box>
   );
 }
 
-const  GuestMenu = ()=>{
-    return <Button color="inherit">Login</Button>
+const  GuestMenu = ({login})=>{
+    return <Button color="inherit" onClick={login}>Login</Button>
 }
 
-const Menu = ({isLoggedIn})=>{
+const Menu = ({isLoggedIn,login})=>{
   if(isLoggedIn){
     return <div>
               <HeaderRoleMenu />
@@ -49,12 +59,12 @@ const Menu = ({isLoggedIn})=>{
            </div>; 
           
   }else{
-    return <GuestMenu />
+    return <GuestMenu login={login} />
   }
     
 }
 
-const selectLoginStatus = state => {console.log(state);return state.user.isLoggedIn};
+const selectLoginStatus = state =>  state.user.isLoggedIn;
 
 
 

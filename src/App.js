@@ -5,6 +5,7 @@ import {
   Link
 } from "react-router-dom";
 import  HomeLayout from  './Layouts/HomeLayout'
+import AppLayout from './Layouts/AppLayout';
 import './App.css';
 
 import BookSlot from './components/BookSlot';
@@ -13,9 +14,13 @@ function App() {
   return (
     <div className="App">
        <Router>
-       <Route  path="/">
+        <Route  path="/">
           <HomeLayout />
         </Route>
+        <Route  path="/app">
+          <AppLayout />
+        </Route>
+       
       </Router>
     </div> 
   );

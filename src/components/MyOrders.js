@@ -29,6 +29,7 @@ function TablePaginationActions(props) {
   
 
   const handleFirstPageButtonClick = (event) => {
+    
     onPageChange(event, 0);
   };
 
@@ -90,21 +91,23 @@ export default function MyOrders() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   let menuState = useSelector(selectedMenu)
   let [rows,setRows] = useState([]);
+  let [count,setcount] = useState(0);
 
   useEffect(()=>{
-    getPlacedOrders({pageNumber:10,rowCount:10})
-    .then(res=>{
-        
-        console.log();
-        setRows(res.data.data.rows);
-
-    })
-  },[menuState.menu])
+    if(menuState.menu){
+        getPlacedOrders({pageNumber:page,rowCount:rowsPerPage})
+        .then(res=>{
+            setRows(res.data.data.rows);
+            setcount(res.data.data.count);
+        })
+    }
+    
+  },[menuState.menu,page])
 
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - count) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -112,7 +115,6 @@ export default function MyOrders() {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   return (
@@ -120,7 +122,7 @@ export default function MyOrders() {
         <Grid item xs={3}>
             <ListComponent />
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={6}>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                     <TableBody>
@@ -149,7 +151,7 @@ export default function MyOrders() {
                         <TablePagination
                         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                         colSpan={3}
-                        count={rows.length}
+                        count={count}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
@@ -166,6 +168,10 @@ export default function MyOrders() {
                     </TableFooter>
                 </Table>
             </TableContainer>
+        </Grid>
+
+        <Grid item sx ={3}>
+                
         </Grid>
      </Grid>
     

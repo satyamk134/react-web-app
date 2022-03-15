@@ -3,7 +3,12 @@ const initialAlertState = {
     showSnackbar:false,
     snackbarMsg:'',
     snackbarStatus:'',
-    menu:""
+    menu:"",
+    errorMsg:"",
+    errorDialog:false,
+    dialogMsg:"" 
+
+
 }
 
 export default function alertReducer(state = initialAlertState, action) {
@@ -20,6 +25,12 @@ export default function alertReducer(state = initialAlertState, action) {
         }
         case 'CHANGE_SIDE_MENU' :{
             return { ...state, ...{menu:action.payload.menu}}
+        }
+        case 'TOGGLE_DIALOG_ALERT': {
+            return { ...state, ...{errorDialog:action.payload.showAlert}}
+        }
+        case 'ADD_DIALOG_MESSAGE': {
+            return { ...state, ...{dialogMsg:action.payload.msg}}
         }
         // Do something here based on the different types of actions
         default:

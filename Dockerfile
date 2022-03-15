@@ -4,10 +4,11 @@ COPY package*.json ./
 RUN npm install
 COPY src ./src
 COPY public ./public
-COPY .env.production ./
+COPY .env.dev ./
 COPY 4981692DAFF66E3F551BC96F51ACE80A.txt ./
 COPY nginx.conf ./
-RUN npm run build
+ARG environment=development
+RUN npm run build:${environment}
 # starting second, nginx build-stage
 FROM nginx:1.15
 

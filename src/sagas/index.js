@@ -1,6 +1,8 @@
 import { put, takeEvery, all,call } from 'redux-saga/effects';
-import { login, bookPickupSlot, deocodeJwt, addOrderDetails,signup} from '../Services/HttpApiCall';
-
+import store from '../store'
+import { login, bookPickupSlot, deocodeJwt, signup, 
+validateSessionToken, addServiceToCart, removeServiceFromCart,orderDetails,
+cart} from '../Services/HttpApiCall';
 function* helloSaga(){
     console.log("Welcome to sagas!!");
 }
@@ -11,8 +13,6 @@ function* loginUserClick(){
 
 function* watchLoginClick(){
     const loggedInUSerInfo = yield takeEvery('LOGIN_CLICK', loginUserClick);
-  
-
 }
 
 function* setAfterLoginData(){
@@ -24,7 +24,7 @@ function* loginUser(action){
     try{
         let userInfoAfterLogin = yield call(login, action.payload);
         yield put({type:'LOGIN_POPUP',payload:{isLoginPopupOpen:false}});
-        yield put({type:'UPDATE_USER_STATE',payload:{...userInfoAfterLogin.data.data,...{isLoggedIn:true,loginStatus:"loggedIn"}}});
+        yield put({type:'UPDATE_USER_STATE',payload:{...userInfoAfterLogin.data.data,...{isLoggedIn:true,loginStatus:"loggedIn",loginButtonClicked:true}}});
     }catch(err){
         console.log("error is",err.message);
         console.log("error is",err.response.data.msg);
@@ -43,8 +43,13 @@ function* watchLoggedIn(){
 }
 
 function* bookPikupSaga(action){
-    let bookSlotRes = yield call(bookPickupSlot,action.payload);
-    yield put({type:"PICKUP_SLOT_BOOKED", payload:{isPickupSlotBooked:true}});
+    try{
+        let bookSlotRes = yield call(bookPickupSlot,action.payload);
+        yield put({type:"PICKUP_SLOT_BOOKED", payload:{isPickupSlotBooked:true}});
+    }catch(err){
+        console.log("you should really think something about this error man.");
+    }
+   
 }
 
 function* watchBookPickup (){
@@ -52,32 +57,20 @@ function* watchBookPickup (){
 }
 
 function* decodeJwtToken(action){
-    let postLoginInfo = yield call(deocodeJwt, action.payload);
-    let loginState = {...postLoginInfo.data, isLoggedIn:true};
-    yield put({type:'UPDATE_USER_STATE',payload:loginState});
+    try{
+        let postLoginInfo = yield call(deocodeJwt, action.payload);
+        let loginState = {...postLoginInfo.data, isLoggedIn:true};
+        yield put({type:'UPDATE_USER_STATE',payload:loginState});
+    }catch(error){
+        console.log("Error in jwt decode");
+    }
+    
 
     
 }
 
 function* watchJwtDecode(){
     yield takeEvery('DECODE_JWT', decodeJwtToken);
-}
-
-function* addOrderDetailsHandler(action){
-    try{
-        yield call(addOrderDetails, action.payload);
-
-    }catch(err){
-        console.log("Error in adding the order details");
-
-    }
-    
-    // let loginState = {...postLoginInfo.data, isLoggedIn:true};
-    //yield put({type:'UPDATE_USER_STATE',payload:loginState});
-}
-
-function* watchAddOrderDetails(){
-    yield takeEvery('SAVE_ORDER_DETAILS',addOrderDetailsHandler);
 }
 
 function* singupHandler(action){
@@ -100,6 +93,105 @@ function* watchSignup(){
     yield takeEvery('SIGNUP',singupHandler);
 }
 
+function* loginSessionHanlder(){
+    try {
+        let validationStatus = yield call(validateSessionToken);
+        yield put({type:'SERIVICES_CHECKOUT_CLICKED',payload:{checkoutValid:true}});
+    } catch (err) {
+        console.log("came inside catch");
+        yield put({type:'SET_LOGIN_STATUS',payload:{isLoggedIn:false}});
+        yield put({type:"LOGIN_POPUP", payload:{isLoginPopupOpen:true}});
+    }
+}
+
+function* watchLoginSession(){
+    yield takeEvery('CHECK_LOGIN_SESSION',loginSessionHanlder);
+}
+
+function* addServiceToCartHandler(action){
+    try {
+        let addResponse = yield call(addServiceToCart,action.payload);
+        const {status} = addResponse.data;
+        if(status=='error'){
+            yield put({type:'TOGGLE_DIALOG_ALERT',payload:{showAlert:true}}); 
+            yield put({type:'ADD_DIALOG_MESSAGE',payload:addResponse.data}); 
+            yield put({type:'SAVE_CART_ID',payload:addResponse.data});
+        }else{
+            yield put({type:'UPDATE_CART_SERVICE_ADD',action}); 
+        }
+        
+        
+    } catch (err) {
+        yield put({type:'ADD_TO_CART_OFFLINE',action});
+        console.log("came inside catch",err);   
+    }
+
+}
+
+function* removeServiceFromCartHandler(action){
+    try {
+        yield call(removeServiceFromCart,action.payload);
+        yield put({type:'UPDATE_CART_SERVICE_REMOVE',action});
+    } catch (err) {
+        yield put({type:'REMOVE_FROM_CART_OFFLINE',action});
+        console.log("came inside catch",err);
+        
+    }
+}
+function* addFirstItemInCart(action){
+    try {
+        yield call(addServiceToCart,action.payload);
+        yield put({type:'AFTER_CART_EMPTY',payload:{addAfterEmpty:false}});
+    }catch (err) {
+        yield put({type:'ADD_TO_CART_OFFLINE',action});
+        console.log("came inside catch",err);   
+    }
+}
+
+function* watchAddServiceToCart(){
+    yield takeEvery('ADD_SELECTED_SERVICE',addServiceToCartHandler);
+    yield takeEvery('REMOVE_SELECTED_SERVICE',removeServiceFromCartHandler);
+    yield takeEvery('ADD_CART_FIRST_ITEM',addFirstItemInCart);
+    
+
+}
+
+function* addOrderDetails(action){
+    try {
+        let orderDetailsRes = yield call(orderDetails.add,action.payload);
+        yield put({type:'ADD_ORDER_DETAIL_SUCCESS',payload:orderDetailsRes.data.data});
+    } catch (err) {
+       console.log("error ",err);
+        
+    }
+}
+function* deleteOrderDetail(action){
+    try {
+        console.log("action.payload",action.payload);
+        yield call(orderDetails.remove,action.payload);
+        yield put({type:'DELETE_ORDER_DETAIL_SUCCESS',payload:action.payload});
+    } catch (err) {
+       console.log("error ",err);
+        
+    }
+}
+
+function* watchOrderDetails(){
+    yield takeEvery('ADD_ORDER_DETAIL',addOrderDetails);
+    yield takeEvery('DELETE_ORDER_DETAIL',deleteOrderDetail);
+}
+
+function* emptyCartHandler(action){
+    yield call(cart.delete,action.payload);
+    store.dispatch({'type':"AFTER_CART_EMPTY", payload:{addAfterEmpty:true}});
+}
+
+function* watchCartAction(){
+    yield takeEvery('EMPTY_CART',emptyCartHandler);
+}
+
+
+
 export  function* rootSaga() {
     yield all([
       helloSaga(),
@@ -107,7 +199,11 @@ export  function* rootSaga() {
       watchLoggedIn(),
       watchBookPickup(),
       watchJwtDecode(),
-      watchAddOrderDetails(),
-      watchSignup()
+      watchSignup(),
+      watchLoginSession(),
+      watchAddServiceToCart(),
+      watchOrderDetails(),
+      watchCartAction()
+
     ])
   }

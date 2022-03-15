@@ -5,6 +5,7 @@ const initialUserState = {
     loginStatus:'initial',
     signupStatus:'initial',
     isSignedUp:false,
+    validSession:false,
     firstName: 'Sam',
     lastName: 'Kumar',
     role: 'customer',
@@ -12,7 +13,8 @@ const initialUserState = {
     token: '',
     isLoginPopupOpen: false,
     isPickupSlotBooked:false,
-    currentUrl:""
+    currentUrl:"",
+    loginButtonClicked:false
 }
 
 export default function loginReducer(state = initialUserState, action) {
@@ -41,7 +43,9 @@ export default function loginReducer(state = initialUserState, action) {
             console.log("payload",action.payload);
             return {...state,...{currentUrl:action.payload.currentUrl}};
         }
-
+        case 'SET_LOGIN_SESSION':{
+            return {...state,...{validSession:action.payload.validSession}};
+        }
         // Do something here based on the different types of actions
         default:
             // If this reducer doesn't recognize the action type, or doesn't

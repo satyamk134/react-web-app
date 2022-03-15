@@ -16,21 +16,24 @@ import { useSelector,useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import   './css/HeaderRoleMenu.css';
 
-export default function HeaderRoleMenu() {
+export default function HeaderRoleMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   let userInfo = useSelector(selectUser);
   let history = useHistory();
   const open = Boolean(anchorEl);
+  const {role} = userInfo; 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   const myOrdersHandler = ()=>{
     console.log("my order handler called");
-    history.push("/my-orders");
+    if(role == 'customer'){
+      history.push("/app/my-order/all-orders");
+    }
+    
   }
   return (
     <React.Fragment>

@@ -64,16 +64,9 @@ export default function Login() {
 
   useEffect(()=>{
     if(userInfo.isLoginPopupOpen){
-      let isUserLoggedIn = checkLoginCookie();
-      if(isUserLoggedIn){
-        //user is already logged in
-        //dispatch action set login popup close 
-        dispatch({type:"LOGIN_POPUP", payload:{isLoginPopupOpen:false}});
-        redirectAfterLogin(userInfo);
-      }else{
-          // do nothing
-          console.log("open the login popup");
-      }
+      //user is already logged in
+      //dispatch action set login popup close 
+      dispatch({type:"LOGIN_POPUP", payload:{isLoginPopupOpen:true}});
     }
   },[userInfo.isLoginPopupOpen]);
 
@@ -95,9 +88,13 @@ export default function Login() {
     }
   },[userInfo.signupStatus])
 
+
+
   const checkLoginCookie = () => {
     let cookies = new Cookies();
     let token = cookies.get('token');
+    console.log("token is",token);
+    setBearerToken(token);
     if(token) {
       return token;
     } else {
@@ -156,9 +153,7 @@ export default function Login() {
       .then(setJwtToken)
       .then(loginGoogleUser)
       .then((res)=>{
-        console.log("response  is",res);
-         //login is already done from backend 
-         dispatch({type:'UPDATE_USER_STATE',payload:{...res.data.data,...{isLoggedIn:true,loginStatus:"loggedIn"}}});
+         dispatch({type:'UPDATE_USER_STATE',payload:{...res.data.data,...{isLoggedIn:true,loginStatus:"loggedIn",loginButtonClicked:true}}});
          return Promise.resolve(1);
       })
       .catch(err=>{
@@ -174,12 +169,14 @@ export default function Login() {
 
   const redirectAfterLogin = (userInfo)=>{
 
-    if(userInfo.role == "wishmaster"){
-      history.push("/my-orders-agent");
-    }else if(userInfo.role == "admin"){
+  
+
+    if(userInfo.role == "wishmaster" && userInfo.loginButtonClicked){
+      history.push("/app/delivery/current-order");
+    }else if(userInfo.role == "admin" && userInfo.loginButtonClicked){
       history.push("/dashboard");
-    }else{
-      history.push("/slot-booking");
+    }else if(userInfo.loginButtonClicked){
+      history.push("/app/slot-booking");
     }
     
 

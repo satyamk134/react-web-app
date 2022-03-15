@@ -1,8 +1,10 @@
 import userReducer from './features/user';
 import orderReducer from './features/orders';
 import alertReducer from './features/alerts';
-
+import shopReducer from  './features/shop';
+import cartReducer from './features/cart';
 import { combineReducers } from 'redux'
+
 
 // export default function rootReducer(state = {}, action) {
 //   // always return a new object for the root state
@@ -16,5 +18,7 @@ import { combineReducers } from 'redux'
 export default combineReducers({
   user:userReducer,
   order:orderReducer,
-  alert:alertReducer
+  alert:alertReducer,
+  shop:shopReducer,
+  cart:cartReducer
 })
