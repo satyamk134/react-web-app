@@ -5,6 +5,10 @@ const initialOrderState = {
     checkoutValid:"",
     orderDetails:[],
     shopId:"",
+    addressId:"",
+    pickupTime:"",
+    status:""
+
 
 }
 
@@ -44,6 +48,26 @@ export default function orderReducer(state = initialOrderState, action) {
         case 'ADD_ORDER_DETAILS_ALL':{
             return { ...state, ...{orderDetails:action.payload}};
         }
+
+        case 'SET_PICKUP_TIME':{
+            return { ...state, ...{pickupTime:action.payload.time}};
+        }
+        case 'SET_PICKUP_ADDRESS':{
+            return { ...state, ...{addressId:action.payload.addressId}};
+        }
+        
+        case 'ORDER_PLACED_SUCCESS':{
+            return { ...state, ...{status:"SUCCESS",orderId:action.payload.orderId}};
+        }
+
+        case 'ORDER_PLACED_ERROR':{
+            return { ...state, ...{status:"ERROR"}};
+        }
+        case 'RESET_ORDER_STATUS':{
+            const status = action.payload.status;
+            return { ...state, ...{status:status}}
+        }
+
         // Do something here based on the different types of actions
         default:
             // If this reducer doesn't recognize the action type, or doesn't

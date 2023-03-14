@@ -1,8 +1,10 @@
 import { put, takeEvery, all,call } from 'redux-saga/effects';
 import store from '../store'
-import { login, bookPickupSlot, deocodeJwt, signup, 
-validateSessionToken, addServiceToCart, removeServiceFromCart,orderDetails,
+import { login, placeOrder, deocodeJwt, signup, 
+validateSessionToken, addServiceToCart, removeServiceFromCart,
+orderDetails,saveAddress,updateAddressApi,deleteAddressApi,cutomerClothService,
 cart} from '../Services/HttpApiCall';
+
 function* helloSaga(){
     console.log("Welcome to sagas!!");
 }
@@ -22,9 +24,9 @@ function* setAfterLoginData(){
 function* loginUser(action){
     console.log("login use called",action.payload);
     try{
-        let userInfoAfterLogin = yield call(login, action.payload);
+        let result = yield call(login, action.payload);
         yield put({type:'LOGIN_POPUP',payload:{isLoginPopupOpen:false}});
-        yield put({type:'UPDATE_USER_STATE',payload:{...userInfoAfterLogin.data.data,...{isLoggedIn:true,loginStatus:"loggedIn",loginButtonClicked:true}}});
+        yield put({type:'UPDATE_USER_STATE',payload:{...result.data,...{isLoggedIn:true,loginStatus:"loggedIn",loginButtonClicked:true}}});
     }catch(err){
         console.log("error is",err.message);
         console.log("error is",err.response.data.msg);
@@ -32,9 +34,7 @@ function* loginUser(action){
         yield put({type:'UPDATE_USER_STATE',payload:{loginStatus:'failed',isLoggedIn:false}});
         yield put({type:'SET_SNACK_MESSAGE',payload:{snackbarMsg:msg,snackbarStatus:"error"}});
         yield put({type:'SHOW_SNACK_ERROR',payload:{showSnackbar:true}});
-    }
-    
-    
+    }   
 }
 
 function* watchLoggedIn(){
@@ -42,24 +42,32 @@ function* watchLoggedIn(){
     yield takeEvery('LOGIN', loginUser);
 }
 
-function* bookPikupSaga(action){
+function* placeOrderSaga(action){
     try{
-        let bookSlotRes = yield call(bookPickupSlot,action.payload);
-        yield put({type:"PICKUP_SLOT_BOOKED", payload:{isPickupSlotBooked:true}});
+        let orderRes = yield call(placeOrder,action.payload);
+        yield put({type:"ORDER_PLACED_SUCCESS", payload:{status:"SUCCESS",orderId:orderRes.payload.id}});
+        
     }catch(err){
-        console.log("you should really think something about this error man.");
+        console.log("error is",err);
+
+        /**
+         * previously- you should really think something about this error man.
+         * Now- Yes, man!, i am thinking about it now.haha
+         * 
+        */
+        yield put({type:"ORDER_PLACED_ERROR", payload:{status:"ERROR",msg:"Error in placing the order"}});
     }
    
 }
 
 function* watchBookPickup (){
-    yield takeEvery('BOOK_PICKUP_SLOT', bookPikupSaga);
+    yield takeEvery('PLACE_ORDER', placeOrderSaga);
 }
 
 function* decodeJwtToken(action){
     try{
-        let postLoginInfo = yield call(deocodeJwt, action.payload);
-        let loginState = {...postLoginInfo.data, isLoggedIn:true};
+        let result = yield call(deocodeJwt, action.payload);
+        let loginState = {...result, isLoggedIn:true};
         yield put({type:'UPDATE_USER_STATE',payload:loginState});
     }catch(error){
         console.log("Error in jwt decode");
@@ -186,9 +194,68 @@ function* emptyCartHandler(action){
     store.dispatch({'type':"AFTER_CART_EMPTY", payload:{addAfterEmpty:true}});
 }
 
-function* watchCartAction(){
+function* watchCartAction() {
     yield takeEvery('EMPTY_CART',emptyCartHandler);
 }
+
+function* addAddress(action){
+    try {
+        yield put({type:'SHOW_BACKDROP'});
+        yield call(saveAddress,action.payload);
+        yield put({type:'HIDE_BACKDROP'});
+        yield put({type:'ADDRESS_ADDED',payload:{isAddressAdded:true}});
+        
+    } catch (err) {
+       console.log("error ",err);
+        
+    }
+}
+function* updateAddress(action){
+    try {
+        yield put({type:'SHOW_BACKDROP'});
+        yield call(updateAddressApi,action.payload);
+        yield put({type:'HIDE_BACKDROP'});
+        yield put({type:'ADDRESS_UPDATED',payload:{isAddressUpdated:true}});
+    } catch (err) {
+       console.log("error ",err);
+        
+    }
+}
+
+function* deleteAddress(action){
+    try {
+        yield put({type:'SHOW_BACKDROP'});
+        yield call(deleteAddressApi,action.payload);
+        yield put({type:'HIDE_BACKDROP'});
+        yield put({type:'ADDRESS_DELETED',payload:{isAddressDeleted:true}});
+    } catch (err) {
+       console.log("error ",err);
+        
+    }
+
+}
+
+function* watchAccountAction() {
+    yield takeEvery('ADD_ADDRESS',addAddress);
+    yield takeEvery('UPDATE_ADDRESS',updateAddress);
+    yield takeEvery('DELETE_ADDRESS',deleteAddress);
+}
+
+
+function *saveCustomerClothCount(action){
+    try{
+        yield call(cutomerClothService.count,action.payload);
+    }catch(err){
+        console.log("Error in saving the customer cloth count");
+    }
+
+}
+
+function* watchSaveCustomerClothes(){
+    yield takeEvery('SAVE_CUSTOMER_CLOTH_COUNT',saveCustomerClothCount);
+}
+    
+
 
 
 
@@ -203,7 +270,8 @@ export  function* rootSaga() {
       watchLoginSession(),
       watchAddServiceToCart(),
       watchOrderDetails(),
-      watchCartAction()
-
+      watchCartAction(),
+      watchAccountAction(),
+      watchSaveCustomerClothes()
     ])
   }

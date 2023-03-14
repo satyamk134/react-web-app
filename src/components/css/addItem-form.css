@@ -1,0 +1,30 @@
+.add_item_particular{
+    display: flex;
+    flex-direction: column
+}
+.add_item_form_particulars{
+    display: flex;
+    flex-direction: column;
+}
+
+.add_item_form_particulars__items{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.add_item_form_particulars__items__header{
+    display: flex;
+    justify-content: row;
+    justify-content: space-around;
+
+}
+.add_item_form_particulars__items > div{
+    margin: 5px;
+}
+
+.add_items_wrapper {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}

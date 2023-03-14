@@ -1,0 +1,33 @@
+.form-wrapper{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+.form-wrapper > div{
+    margin-top: 15px;
+}
+.form-wrapper > button{
+    margin-top: 15px
+}
+
+.form-wrapper > .first-last-name{
+    display: flex;
+    justify-content:space-between ;
+    
+}
+.form-wrapper .form-input-wrapper{
+    padding-right: 15px;
+    width: 100%;
+}
+.form-wrapper > .city-pincode{
+    display: flex;
+    flex-direction: row;
+}
+.addresses{
+    display: flex;
+    flex-direction: column;
+}
+.address-buttons{
+    display: flex;
+    justify-content: space-between;
+}

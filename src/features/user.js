@@ -14,7 +14,8 @@ const initialUserState = {
     isLoginPopupOpen: false,
     isPickupSlotBooked:false,
     currentUrl:"",
-    loginButtonClicked:false
+    loginButtonClicked:false,
+    provider:""
 }
 
 export default function loginReducer(state = initialUserState, action) {
@@ -45,6 +46,9 @@ export default function loginReducer(state = initialUserState, action) {
         }
         case 'SET_LOGIN_SESSION':{
             return {...state,...{validSession:action.payload.validSession}};
+        }
+        case 'NEW_ADDRESS_ADDED':{
+            return {...state};
         }
         // Do something here based on the different types of actions
         default:

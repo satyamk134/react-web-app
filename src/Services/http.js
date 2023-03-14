@@ -23,7 +23,7 @@ export const mainApp = {
     },
 
     deleteRequest: (url, data) => {
-        return MainAxios.delete(url,data);
+        return MainAxios.delete(url,{data:data});
     }
 }
 

@@ -58,10 +58,11 @@ export default function Shop(props) {
         title={props.shopInfo.name}
         subheader="September 14, 2016"
       />
+      
       <CardMedia
         component="img"
         height="194"
-        image={props.shopInfo.shopImage}
+        image={'/shops/'+props.shopInfo.shopImage}
         alt="Paella dish"
       />
       <CardContent>

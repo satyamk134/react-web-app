@@ -34,8 +34,7 @@ export default function Menu() {
     useEffect(()=>{
         getMerchantList()
         .then(result=>{
-            
-            setShopList(result.data);
+          setShopList(result);
         })
     },[])
     

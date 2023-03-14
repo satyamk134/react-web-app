@@ -77,44 +77,7 @@ export default function OrderDetails(props) {
 
   return (
     <div>
-      <BootstrapDialog
-        onClose={handleClose}
-        aria-labelledby="customized-dialog-title"
-        open={openOrderDetail}
-      >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Services Booked
-        </BootstrapDialogTitle>
-        <DialogContent dividers>
-            <Box>
-            <FormControl>
-            <FormLabel id="demo-row-radio-buttons-group-label">Service Type</FormLabel>
-                <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="row-radio-buttons-group"
-                >
-                    {servicesWithDetail.map(((element,index)=><FormControlLabel 
-                            value={element.id} control={<Radio />} 
-                            label={element.name}
-                            onClick={showSelectedServiceClothes.bind(this,index)}
-                        />))
-                    }
-                    
-                    
-                </RadioGroup>
-            </FormControl>
-            </Box>
-            <Box>
-                  {localClothes.map((element)=>(<p>{element.serviceDetail.cloth}   {element.count}</p>))}
-            </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
+      order details working..
     </div>
   );
 }

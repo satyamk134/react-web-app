@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useState, useEffect } from 'react';
-import {getServicesBookedInOrder,merchantServices} from '../../Services/HttpApiCall';
+
 import { useHistory, useParams } from 'react-router-dom';
 import AddedItemList from './AddedItemList';
 import AddItemForm from './AddItemForm';
@@ -17,123 +17,90 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
+import OrderActions from './OrderStepperActions'
+import '../css/current-order-form.css'
+import { useDispatch } from 'react-redux';
+import {order} from '../../Services/delivery-partner-service';
+import Journey from './Journey'
+import Confirmation from './Confirmation';
+import ClothesCollection from './ClothesCollection';
 export default function CurrentOrderForm() {
 
-
-  const [bookedServices,setBookedServices] = useState([]);
-  const [selectedService, setSelectedService]= useState(0);
-  const [displayedService,setDisplayedService]  = useState([]);
-  const [serviceOptions, setServiceOptions] = useState([]);
-  const [servicesLoaded,setServicesLoaded] = useState(false);
-  const [particulars, setParticulars] = useState([]);
-  const [unit, setUnit] = useState('kg');
+  console.log("currebt order form loaded-=================>>>>>>>>>>>")
+  
+  const [activeStep,setActiveStep] = useState(0)
   const {orderId} =  useParams();
-  console.log("order id",orderId);
-  useEffect(()=>{
-    getServicesBookedInOrder({orderId:orderId})
-    .then(response=>{
-      if(response){
-        console.log("response data data",response.data.data);
-        setBookedServices(response.data.data);
-        setDisplayedService(response.data.data[0]);
-        setServicesLoaded(true);
+  const steps = ['On the way to Customer', 'Clothes Collection','Going to shop','Drop Confirmation'];
+
+  let stepperNextCallBack = () => {
+    //call the next end point 
+    //update the order status
+    console.log("active step is=======>",activeStep)
+    if(activeStep == 0) {
+      return async () => {
+        await order.updateStatus({orderId:orderId,status:'PICK_UP_PARTNER_ARRIVED'});
+        setActiveStep(1);
+       
       }
-      console.log("gettting assigned order",response);
-    })
-    .catch(err=>{
-      console.log("error ing getting the current order",err);
-    })
-
-  },[]);
-
-  useEffect(()=>{
-    if(servicesLoaded == true){
-      selectService({target:{value:0}});
+    } else if(activeStep == 1) {
+      return async () => {
+        await order.updateStatus({orderId:orderId,status:'PICKED_FROM_CUST'});
+        setActiveStep(2);
+        
+      }
+    } else if(activeStep == 2) { 
+        return async () => {
+          await order.updateStatus({orderId:orderId,status:'MOVING_TO_SHOP'});
+          setActiveStep(3);
+          
+        }
+    } else if(activeStep == 3) {
+      return async () => {
+        await order.updateStatus({orderId:orderId,status:'DROP_AT_SHOP_COMPLETE'});
+        setActiveStep(4);
+        
+      }
     }
-    
-  },[servicesLoaded])
-
-  const selectService = (event)=>{
-    console.log("Called");
-    let index = event.target.value; 
-    console.log("index is",bookedServices);
-    let serviceId = bookedServices[index].id;
-    merchantServices.getDetails({serviceId:serviceId})
-    .then(response=>{
-      let currentService =response.data.payload.services;
-      setServiceOptions(response.data.payload.services.serviceDetail);
-      setParticulars(response.data.payload.particulars.particulars);
-      setUnit(currentService.unit);
-    })
-    setSelectedService(index);
-    setDisplayedService(bookedServices[index]);
-    
   }
 
   
-
+  const currentStepHtml = () => {
+      console.log("current html called====>");
+      if(activeStep == 0) {
+          const props = {
+            status : 'MOVE_TO_CUST',
+            source:'142 1st c Main',
+            destination:'12th Main, Church street Phelendopia'
+          }
+          return <Journey  details = {props}/>
+      } else if(activeStep == 1) {
+        return <ClothesCollection />
+      } else if(activeStep == 2) {
+          const props = {
+            status : 'MOVE_TO_CUST',
+            source:'142 1st c Main',
+            destination:'12th Main, Church street Phelendopia'
+          }
+          return  <Journey details={props}/>
+      }else if(activeStep == 3) {
+          return  <Confirmation />
+      }
+  }
 
   return (
-    <Box sx={{display:'flex'}}>
-        
-     
-        <Box sx={{flexGrow:"9"}}>
-            <Box sx={{mt:"20px"}}>
-              <Grid container spacing={2} justifyContent="flex-end">
-                <Grid item  p={2} xs={6}>
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Service</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={selectedService}
-                      label="service"
-                      onChange={selectService}
-                      
-                    >
-                      {
-                        bookedServices.map((element,index)=>(<MenuItem value={index}>{element.name}</MenuItem>))
-                      }
-                      
-                    </Select>
-                  </FormControl>
-                </Grid>
-                
-              </Grid>
-            </Box>
-
-            <Box sx={{display:'flex'}}>
-                <Box sx={{flexGrow:1}}>
-                  {displayedService.serviceName}
-                </Box>
-                <Box sx={{flexGrow:4}}>
-                  <Box sx={{ width:"70%"}}>
-                    <AddItemForm 
-                    serviceOptions={serviceOptions} 
-                    orderId={orderId} 
-                    serviceName={displayedService.name} 
-                    serviceId={displayedService.id} 
-                    unit={unit}
-                    particulars={particulars}
-                    setParticulars={setParticulars}
-                    
-                    />
-                  </Box>
-                
-                  <AddedItemList 
-                    unit={unit} 
-                    orderId={orderId} 
-                    serviceId={displayedService.id} 
-                    particulars={particulars}
-                  />
-                </Box>
-            </Box>
-        </Box>
-
-        <Box sx={{flexGrow:"1"}}>
-           <OrderStepper orderId={orderId} />
-        </Box>
-        
+    <Box className="current_order_wrapper">
+      <Box>
+           <OrderStepper orderId={orderId} activeStep = {activeStep} steps={steps}/>
+      </Box>
+      { currentStepHtml() }
+      <Box>
+          <OrderActions 
+            activeStep = {activeStep} 
+            setActiveStep={setActiveStep} 
+            isStepSkipped={false} steps={3}
+            handleNext={stepperNextCallBack()}
+          />
+      </Box>
     </Box>
   );
 }

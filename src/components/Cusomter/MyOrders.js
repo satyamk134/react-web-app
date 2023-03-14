@@ -11,9 +11,10 @@ export default function MyOrders() {
 
   let [orders,setOrders] = useState([]);
   useEffect(()=>{
+    console.log("came to get my order");
     order.get()
     .then(response=>{
-        setOrders(response.data.data);
+        setOrders(response.data);
     })
   },[])
   return (

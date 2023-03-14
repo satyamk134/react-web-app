@@ -37,8 +37,8 @@ export default function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography onClick={redirectToLanding} variant="h6" component="div" sx={{ flexGrow: 1,cursor: 'pointer' }}>
-            swab
+          <Typography  variant="h6" component="div" sx={{ flexGrow: 1,cursor: 'pointer' }}>
+            <span onClick={redirectToLanding}>swab</span>
           </Typography>
           <Menu isLoggedIn={isLoggedIn} login={loginHandler}/>
         </Toolbar>

@@ -4,12 +4,12 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import  HomeLayout from  './Layouts/HomeLayout'
+import HomeLayout from './Layouts/HomeLayout'
 import AppLayout from './Layouts/AppLayout';
+import AppLayoutWithSideDrawer from './Layouts/AppLayoutWithSideDrawer';
+import SimpleBackdrop from './Basic-components/BackdropSpinner'
 import './App.css';
-
 import BookSlot from './components/BookSlot';
-import Test from './components/TestComponent';
 function App() {
   return (
     <div className="App">
@@ -19,6 +19,9 @@ function App() {
         </Route>
         <Route  path="/app">
           <AppLayout />
+        </Route>
+        <Route  path="/my-account">
+          <AppLayoutWithSideDrawer />
         </Route>
        
       </Router>

@@ -1,0 +1,4 @@
+.current_order_wrapper{
+    display: flex;
+    flex-direction: column;
+}

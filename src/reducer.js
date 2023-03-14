@@ -3,6 +3,8 @@ import orderReducer from './features/orders';
 import alertReducer from './features/alerts';
 import shopReducer from  './features/shop';
 import cartReducer from './features/cart';
+import spinnerReducer from './features/spinner';
+import addressReducer from './features/address'
 import { combineReducers } from 'redux'
 
 
@@ -20,5 +22,7 @@ export default combineReducers({
   order:orderReducer,
   alert:alertReducer,
   shop:shopReducer,
-  cart:cartReducer
+  cart:cartReducer,
+  address:addressReducer,
+  spinner:spinnerReducer
 })

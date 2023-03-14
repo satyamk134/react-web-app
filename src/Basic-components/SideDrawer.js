@@ -24,11 +24,15 @@ export default function SideDrawer(){
     let [secondMenus,setSecondMenu] = useState([]);
     useEffect(()=>{
         if(role == 'customer'){
-            setFirstMenu([{name:"Current Order",action:()=>{return history.push('/app/my-order/current-order')}},
-                {name:"My Orders",action:()=>{return history.push('/app/my-order/all-orders')}}
+            setFirstMenu([{name:"My Account",action:()=>{return history.push('/my-account/current-order')}},
+                {name:"My Orders",action:()=>{return history.push('/my-account/all-orders')}}
             ]);
-            setSecondMenu([{name:"Payments",action:()=>{return history.push('/app/my-order/payment')}}
+            setSecondMenu([
+                {name:"Payments",action:()=>{return history.push('/my-account/payments')}},
+                {name:"My Addresses",action:()=>{return history.push('/my-account/address')}},
+                {name:"Support",action:()=>{return history.push('/my-account/support')}}
             ]); 
+
 
         }else if(role == 'wishmaster'){
             //order menus

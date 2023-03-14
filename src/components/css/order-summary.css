@@ -1,0 +1,14 @@
+.cart__item_wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.cart__item_icon_delete_icon{
+    color: red;
+}
+.cart-item-summary{
+    text-align: center;
+    font-weight: lighter;
+    color:#555555
+}

@@ -31,7 +31,7 @@ export default function HeaderRoleMenu(props) {
   const myOrdersHandler = ()=>{
     console.log("my order handler called");
     if(role == 'customer'){
-      history.push("/app/my-order/all-orders");
+      history.push("/my-account/all-orders");
     }
     
   }

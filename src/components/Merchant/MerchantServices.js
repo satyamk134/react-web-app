@@ -298,10 +298,10 @@ export default function MerchantServices({shopId}) {
   useEffect(()=>{
     getMerchantServices({params:{shopId:shopId}})
     .then(response=>{
-      console.log(response.data.services);
-      setRows(response.data.services);
-      setMerchant(response.data.merchant);
-      dispatch({type:'SET_MERCHANT_NAME',payload:{name:response.data.merchant.name}})
+      console.log(response.services);
+      setRows(response.services);
+      setMerchant(response.merchant);
+      dispatch({type:'SET_MERCHANT_NAME',payload:{name:response.merchant.name}})
     });
   },[]);
   

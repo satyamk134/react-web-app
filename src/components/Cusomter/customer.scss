@@ -13,5 +13,37 @@
 
 .each-order-service{
     display: flex;
+    justify-content: space-around;
+    margin: 0;
+}
+.each-order-service >p{
+    margin: 0;
+    text-decoration: underline;
+}
+.amount__paynow{
+    display: flex;
+    flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+.order__merchant{
+    text-align: center;
+    font-size: 22px;
+    margin: 0;
+    padding:0;
+    color:#949494
+}
+.amount__paynow__amount{
+    font-weight: bold;
+    color: black;
+    font-size: 18px;
+    opacity: 0.6;
+}
+.order__merchant >h4{
+    margin:0;
+    padding: 0;
+}
+.success-color{
+    color: green;
 }

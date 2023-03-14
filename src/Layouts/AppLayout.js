@@ -23,7 +23,10 @@ import MyOrders from '../components/Cusomter/MyOrders'
 import SingleOrderDetails from '../components/Cusomter/SingleOrderDetails'
 import Wallet from '../components/Wallet/Wallet';
 import Withdraw from '../components/Wallet/Withdraw';
-
+import SelectAddress from '../components/BookOrder/addressSelector';
+import OrderSuccess from '../components/BookOrder/OrderSuccess';
+import {OrderPayment} from '../components/payment/order-payment';
+import {PaymentSuccess} from '../components/payment/payment-success';
 export default function AppLayout() {
 
     
@@ -31,31 +34,27 @@ export default function AppLayout() {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <Header  position="fixed" />
-      <SideDrawer />
       <Box component="main" sx={{flexGrow: 1, p: 3,width: '95%', backgroundColor:"ebedee" }}>
         <Route path="/app/slot-booking">
             <BookSlot />
         </Route>
+        <Route path="/app/select-address">
+            <SelectAddress />
+        </Route>
+        <Route path="/app/order-success">
+            <OrderSuccess />
+        </Route>
+        
         <Route exact path="/app/delivery/current-order/:orderId">
             <CurrentOrderForm />
         </Route>
         <Route exact path="/app/delivery/current-order">
             <CurrentOrder />
         </Route>
-
-        <Route exact path="/app/my-order/current-order/:orderId">
-            <CurrentOrderForm />
-        </Route>
-        <Route exact path="/app/my-order/current-order">
+        <Route exact path="/app/my-account/current-order">
             <CurrentOrder />
         </Route>
-        <Route exact path="/app/my-order/all-orders">
-            <MyOrders />
-        </Route>
-        <Route exact path="/app/my-order/all-orders/:orderId">
-            <SingleOrderDetails />
-        </Route>
-       
+    
         <Route path="/app/delivery/completed-order">
             <CompletedOrders />
         </Route>
@@ -65,6 +64,14 @@ export default function AppLayout() {
         <Route path="/app/delivery/wallet/withdraw">
             <Withdraw />
         </Route>
+
+        <Route path="/app/order/payment/">
+            <OrderPayment />
+        </Route>
+        <Route path="/app/order/payment-success/">
+            <PaymentSuccess />
+        </Route>
+
         
         
         

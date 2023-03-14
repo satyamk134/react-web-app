@@ -1,0 +1,9 @@
+.jouney_wrapper{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.jouney_wrapper >div{
+    margin-top: 20px;
+}

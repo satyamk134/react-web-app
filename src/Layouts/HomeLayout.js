@@ -24,34 +24,6 @@ export default function HomeLayout (){
         let token = cookies.get('token');
         setBearerToken(token);
     })
-
-    MainAxios.interceptors.response.use(function (response) {
-        // Any status code that lie within the range of 2xx cause this function to trigger
-        // Do something with response data
-        console.log("interceptor called");
-        return response;
-    }, function (error) {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        // Do something with response error
-        console.log("interceptor called inside error",error);
-        //dispatch event for login
-        dispatch({type:'SET_LOGIN_STATUS',payload:{isLoggedIn:false, isLoginPopupOpen:true}});
-        return Promise.reject(error);
-    });
-
-    CartAxios.interceptors.response.use(function (response) {
-        // Any status code that lie within the range of 2xx cause this function to trigger
-        // Do something with response data
-        
-        return response;
-    }, function (error) {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        // Do something with response error
-        console.log("interceptor called inside error",error);
-        //dispatch event for login
-        dispatch({type:'SET_LOGIN_STATUS',payload:{isLoggedIn:false}});
-        return Promise.reject(error);
-    });
     return (
         <Box sx={{flexGrow: 1}}>
             <Header />  

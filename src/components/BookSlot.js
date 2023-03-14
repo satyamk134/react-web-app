@@ -12,9 +12,10 @@ import SuccessAlertComponent from './SuccessAlert';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
-import ListComponent from '../ui-components/ListComponent';
 import OrderSummary from '../components/OrderSummary';
 import {getCart, pushOfflineCart} from '../Services/HttpApiCall';
+import {useHistory} from 'react-router-dom';
+import './css/book-slot.css'
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -51,11 +52,13 @@ function a11yProps(index) {
 export default function BookSlot() {
   const [value, setValue] = React.useState(0);
   const [successAlert, setSuccessAlert] = React.useState(false);
-  const [slotSelcted, slotSelector] = React.useState(0);
+  const [slotSelected, slotSelector] = React.useState(0);
+  const [cartInfo,setCartInfo] = useState({merchantName:"",id:""})
   let [cart, setCart] = React.useState([]);
   const  userInfo = useSelector(selectUser);
   const orderInfo = useSelector(selectOrder)
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(()=>{ 
     if(userInfo.isPickupSlotBooked){
@@ -83,7 +86,8 @@ export default function BookSlot() {
         await pushOfflineCart({services:offlineCartServices});
         localStorage.removeItem("OfflineCart");
         let cartDetails = await getCart();
-        setCart(cartDetails.data.data);
+        setCart(cartDetails.data);
+        setCartInfo(cartDetails.cartInfo)
         return cartDetails;
       }catch(err){
         //Don't delete the localstorage;
@@ -91,28 +95,22 @@ export default function BookSlot() {
       }
     }else{
       let cartDetails = await getCart();
-      setCart(cartDetails.data.data);
+      setCart(cartDetails.data);
+      setCartInfo(cartDetails.cartInfo)
       return cartDetails;
     }
     
   }
-
-
-
-  const confirmOrder = () =>{
-      console.log("selected time slot is",slotSelcted );
-      dispatch({type:'BOOK_PICKUP_SLOT', payload:{ expectedPickupTime: slotSelcted}});
-      
+  const selectAddressHandler = () => {
+    dispatch({type:"SET_PICKUP_TIME",payload:{time:slotSelected}})
+    history.push('/app/select-address');
   }
+
 
   return (
 
-    <Grid container >
-
-      {/* <Grid item xs={6} md={2}>
-        <ListComponent />
-      </Grid> */}
-      <Grid item xs={6} md={8}>
+    <div className='book-slot-wrapper'>
+      <div class="book-slot-time-picker">
         <Box sx={{ width: '100%' }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
@@ -126,15 +124,18 @@ export default function BookSlot() {
           <TabPanel value={value} index={1} >
             <TimeSelector  selectTimeHandler={slotSelector} />  
           </TabPanel>
-
-          <Button variant="contained" onClick ={confirmOrder}>Book Now</Button>
-          <SuccessAlertComponent open={successAlert} setOpen={setSuccessAlert} msg="Slot booked successfully" />
         </Box>
-      </Grid>
-      <Grid item xs={6} md={4}>
-          <OrderSummary cart={cart} />
-      </Grid>
-    </Grid>    
+        
+        
+      </div>
+      <div className='book-slot-cart'>
+        <OrderSummary cart={cart} merchantName={cartInfo.merchantName} />
+        <div className='book-slot-button'>
+          <Button variant="contained" color="secondary" onClick ={selectAddressHandler}>CONFIRM PICK UP TIME</Button>
+        </div>
+        
+      </div>
+    </div>    
   );
 }
 const selectUser = (state)=>{return state.user};

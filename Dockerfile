@@ -1,5 +1,6 @@
 FROM node:16 as react-base
 WORKDIR /react-app
+RUN pwd
 COPY package*.json ./
 RUN npm install
 COPY src ./src
@@ -27,7 +28,3 @@ COPY --from=react-base /react-app/4981692DAFF66E3F551BC96F51ACE80A.txt  /var/www
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
-
-
-
-

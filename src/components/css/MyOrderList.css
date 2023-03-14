@@ -1,0 +1,28 @@
+.card__body li {
+    display: inline;
+}
+.items__header{
+    display: flex;
+    justify-content: space-between;
+}
+.items__body{
+    display: flex;
+    justify-content: space-between;
+    
+}
+.items__body li{
+    list-style-type: none;
+}
+
+.items__header li{
+    width: 150px;
+    list-style-type: none;
+}
+.items__body li{
+    width: 150px;
+}
+.order-list-headers{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}

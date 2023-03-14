@@ -16,7 +16,7 @@ export const login = (data)=>{
     return mainApp.postRequest('/auth/login', data);
 }
 
-export const bookPickupSlot = (data) => {
+export const placeOrder = (data) => {
     return OrderApp.postRequest('/order/place-order', data);
 }
 
@@ -129,6 +129,10 @@ export const order = {
     getDetails:function(data){
         return OrderApp.getRequest(`/order/particular/order/${data.orderId}`);
     },
+    getLastestOrderSummary:function(){
+        return OrderApp.getRequest('/order/summary/latest');
+    },
+    
 }
 
 export const wishmaster = {
@@ -162,6 +166,27 @@ export const addWeighForClothes = (data)=>{
 
 export const getOrderSummary = (params)=>{
     return OrderApp.getRequest(`order/summary/${params.orderId}`);
+}
+
+export const saveAddress = (data) => {
+    return mainApp.postRequest(`user/address`,data);                              
+}
+export const updateAddressApi = (data) => {
+    return mainApp.putRequest(`user/address`,data);      
+}
+
+export const getAddress = (data) => {
+    return mainApp.getRequest(`user/address`,data);                              
+}
+
+export const deleteAddressApi = (data) => {
+    return mainApp.deleteRequest(`user/address`,data);
+}
+
+export const cutomerClothService = {
+    count:function (data) {
+        return OrderApp.postRequest(`/order/processing/save-count`,data);
+    }
 }
 
 
