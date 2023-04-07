@@ -18,9 +18,9 @@ export default function CurrentOrder() {
   const history = useHistory();
   useEffect(()=>{
     getCurrentAssignedOrder()
-    .then(response=>{
+    .then(response => {
         console.log(response.data);
-        let firstOrder = response.data.slice(0,1);
+        let firstOrder = [response.data];
         setOrder(firstOrder);
     })
     .catch(err=>{

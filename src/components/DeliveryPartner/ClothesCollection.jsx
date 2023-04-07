@@ -47,14 +47,15 @@ export default function ClothesCollection(props) {
     const selectService = (event) => {
         let index = event.target.value;
         let serviceId = bookedServices[index].id;
-        setClothes([])
+        setSelectedService(-1);
         merchantServices.getDetails({ serviceId: serviceId })
             .then(response => {
                 let currentService = response.payload.services;
-                setClothes(currentService.serviceDetail)
+                setClothes(currentService.serviceDetail);
+                setSelectedService(index);
+                setDisplayedService(bookedServices[index]);
             })
-        setSelectedService(index);
-        setDisplayedService(bookedServices[index]);
+        
     }
 
     return (
@@ -85,7 +86,7 @@ export default function ClothesCollection(props) {
                 <Box sx={{ flexGrow: 4 }}>
                     <Box >
                         {
-                            clothes.length > 0 &&
+                            selectedService >= 0 && 
                             <AddItemForm
                                 clothes={clothes}
                                 orderId={orderId}

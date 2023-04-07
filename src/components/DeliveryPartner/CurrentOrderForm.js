@@ -24,12 +24,15 @@ import {order} from '../../Services/delivery-partner-service';
 import Journey from './Journey'
 import Confirmation from './Confirmation';
 import ClothesCollection from './ClothesCollection';
+import { getCurrentAssignedOrder } from '../../Services/HttpApiCall';
 export default function CurrentOrderForm() {
 
   console.log("currebt order form loaded-=================>>>>>>>>>>>")
   
   const [activeStep,setActiveStep] = useState(0)
   const {orderId} =  useParams();
+  const [loading,setLoading] = useState(false)
+  const [currentOrder,setCurrentOrder] = useState({status:'PICKUP_ASSIGNED'}); 
   const steps = ['On the way to Customer', 'Clothes Collection','Going to shop','Drop Confirmation'];
 
   let stepperNextCallBack = () => {
@@ -38,20 +41,33 @@ export default function CurrentOrderForm() {
     console.log("active step is=======>",activeStep)
     if(activeStep == 0) {
       return async () => {
-        await order.updateStatus({orderId:orderId,status:'PICK_UP_PARTNER_ARRIVED'});
-        setActiveStep(1);
+        try{
+          setLoading(true)
+          await order.updateStatus({orderId:orderId,status:'PICKUP_ARRIVED'});
+          setLoading(false)
+          setActiveStep(1);
+        }catch(err){
+          console.log("error is",err);
+        }
+        
        
       }
     } else if(activeStep == 1) {
       return async () => {
-        await order.updateStatus({orderId:orderId,status:'PICKED_FROM_CUST'});
+        setLoading(true)
+        /**pickup from customer */
+        await order.updateStatus({orderId:orderId,status:'PICKUP_CUST_DONE'});
         setActiveStep(2);
+        setLoading(false)
         
       }
     } else if(activeStep == 2) { 
         return async () => {
-          await order.updateStatus({orderId:orderId,status:'MOVING_TO_SHOP'});
+          setLoading(true)
+          /**pickup arrived at shop */
+          await order.updateStatus({orderId:orderId,status:'PICKUP_SHOP'});
           setActiveStep(3);
+          setLoading(false)
           
         }
     } else if(activeStep == 3) {
@@ -87,6 +103,31 @@ export default function CurrentOrderForm() {
       }
   }
 
+  useEffect(()=>{
+    getCurrentAssignedOrder()
+    .then(response=>{
+      const {data} = response;
+      if(data.status === 'PICKUP_ASSIGNED') {
+        setActiveStep(0)
+
+      } else if (data.status === 'PICKUP_ARRIVED') {
+        setActiveStep(1)
+
+      } else if (data.status === 'PICKUP_A1') {
+        setActiveStep(2)
+
+      } else if (data.status === 'PICKUP_A2') {
+        setActiveStep(3)
+
+      }
+
+    })
+    .catch(err=>{
+        console.log("Error in getting orders",err);
+    })
+    
+  },[])
+
   return (
     <Box className="current_order_wrapper">
       <Box>
@@ -98,6 +139,7 @@ export default function CurrentOrderForm() {
             activeStep = {activeStep} 
             setActiveStep={setActiveStep} 
             isStepSkipped={false} steps={3}
+            loading={loading}
             handleNext={stepperNextCallBack()}
           />
       </Box>

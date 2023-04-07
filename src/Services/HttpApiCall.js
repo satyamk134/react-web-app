@@ -129,7 +129,7 @@ export const order = {
     getDetails:function(data){
         return OrderApp.getRequest(`/order/particular/order/${data.orderId}`);
     },
-    getLastestOrderSummary:function(){
+    getMyLastOrder:function(){
         return OrderApp.getRequest('/order/summary/latest');
     },
     

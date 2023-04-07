@@ -27,12 +27,13 @@ import SelectAddress from '../components/BookOrder/addressSelector';
 import OrderSuccess from '../components/BookOrder/OrderSuccess';
 import {OrderPayment} from '../components/payment/order-payment';
 import {PaymentSuccess} from '../components/payment/payment-success';
+import { createContext } from 'react';
 export default function AppLayout() {
-
     
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+
       <Header  position="fixed" />
       <Box component="main" sx={{flexGrow: 1, p: 3,width: '95%', backgroundColor:"ebedee" }}>
         <Route path="/app/slot-booking">
@@ -71,10 +72,6 @@ export default function AppLayout() {
         <Route path="/app/order/payment-success/">
             <PaymentSuccess />
         </Route>
-
-        
-        
-        
       </Box>
     </Box>
   );

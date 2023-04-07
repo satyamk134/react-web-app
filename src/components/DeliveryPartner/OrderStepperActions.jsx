@@ -5,8 +5,9 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import LoadingButton from '@mui/lab/LoadingButton';
 export default function (props) {
-    const {activeStep,setActiveStep,nextFunctions,steps, handleNext} =  props
+    const {activeStep,setActiveStep,loading,steps, handleNext} =  props
     const [skipped, setSkipped] = React.useState(new Set());
     const isStepOptional = (step) => {
         return step === 1;
@@ -55,13 +56,17 @@ export default function (props) {
                 }
                 
                 <Box sx={{ flex: '1 1 auto' }} />
+                <LoadingButton
+                    onClick={handleNext}
+                    disabled={activeStep > steps}
+                    size="small"
+                    loading={loading}
+                    variant="outlined"
+                    
+                    >
+                    <span> NEXT </span>
+                </LoadingButton>
 
-                <Button 
-                onClick={handleNext}
-                disabled={activeStep > steps}
-                >
-                    Next
-                </Button>
             </Box>
         </React.Fragment>
     )

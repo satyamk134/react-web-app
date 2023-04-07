@@ -26,10 +26,10 @@ export default function SelectAddress() {
     };
 
     useEffect(() => {
-        if(orderState.status == 'SUCCESS'){
+        if(orderState.status == 'SUCCESS') {
             history.push('/app/order-success');
 
-        }else if(orderState.status == 'ERROR'){
+        }else if(orderState.status == 'ERROR') {
             alert("Error in placing the order");
         }
     },[orderState.status]);
@@ -39,7 +39,10 @@ export default function SelectAddress() {
         let response = await getAddress();
         setAddresses(response.payload);
         if(response.payload.length>0){
-            setSelectedAddress(0);
+            const {id} = response.payload[0];
+            console.log("addressId",response.payload)
+            dispatch({type:"SET_PICKUP_ADDRESS",payload:{addressId:id}});
+            setSelectedAddress(0)
         }
         
     }

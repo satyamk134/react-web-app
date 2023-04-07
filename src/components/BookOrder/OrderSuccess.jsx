@@ -18,7 +18,7 @@ export default function BasicCard() {
   const history = useHistory()
   const dispatch = useDispatch()
   const [selectedServices, setSelectedServices] = useState([])
-
+  const [orderId,setOrderId] = useState("")
   const resetOrderStatus = () => {
     dispatch({ type: 'RESET_ORDER_STATUS', payload: { status: "" } })
   }
@@ -31,11 +31,15 @@ export default function BasicCard() {
     resetOrderStatus()
   }
   const getOrderSummary = async () => {
-    const servicesSelectedRes = await order.getLastestOrderSummary();
-    setSelectedServices(servicesSelectedRes.payload)
+    const servicesSelectedRes = await order.getMyLastOrder();
+    setSelectedServices(servicesSelectedRes.payload.services);
+    setOrderId(servicesSelectedRes.payload.orderId)
   }
-  const orderState = useSelector(state=>state.order);
-  useEffect(getOrderSummary, [])
+  
+
+  useEffect(async ()=>{
+    await getOrderSummary();
+  }, [])
 
   return (
     <div className='order-summary-wrapper'>
@@ -43,7 +47,7 @@ export default function BasicCard() {
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
             <Typography className="center" variant="h5" color="text.primary">
-              ORDER NO - {orderState.orderId}
+              ORDER NO - {orderId}
             </Typography>
             <p>
               Your order has been placed successfully. Click <Link to="app/my-orders">here</Link> to see the recent order detail.
